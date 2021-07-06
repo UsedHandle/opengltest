@@ -31,4 +31,4 @@ compile with `make` command
 **Todo:**
 * Create Triangle
 * Use cmake instead of make
-* Add Windows binary and a mac binary
+* Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)
