@@ -1,6 +1,8 @@
 # opengltest
 small project to make a opengl engine 
 
+keep in mind this is written by beginner
+
 deps to compile:
   glad,
   glfw,
