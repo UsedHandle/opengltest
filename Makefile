@@ -1,6 +1,6 @@
 LDFLAGS = -lstdc++ -lglfw3 -lglad -lm -lpthread -ldl
 
-OpenglTest: *.cpp 
+OpenglTest: *.cpp *.hpp 
 	g++ $(CFLAGS) -o OpenglTest *.cpp $(LDFLAGS)
 
 .Phony: test clean

@@ -4,13 +4,19 @@
 
 // std
 #include <iostream>
+#include <string>
 
 // Custom headers
 #include "glInit.hpp"
 #include "coordinates.hpp"
-#include "shaderReader.hpp"
+#include "shaderHandler.hpp"
 
-string vertexShaderSource = getShader("shaders/shader.vert");
+using namespace std;
+
+// glShaderSource() only takes in chars and not strings
+// Gets shader from file
+const char* vertexShaderSource = getShader("shaders/shader.vert");
+const char* fragmentShaderSource = getShader("shaders/shader.frag");
 
 int main(){
 	// Inits glfw and core profile
@@ -40,7 +46,22 @@ int main(){
 		return -1;
 	}
 	
-	cout << vertexShaderSource;
+	// Creates vertex shader, links source code to shader, and compiles it
+	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
+	compileShader(vertexShader, &vertexShaderSource);
+
+	// Simliar to above but it creates a fragment shader
+	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+	compileShader(fragmentShader, &fragmentShaderSource);
+	
+	// Creates shader program, attaches shaders, and connects the io of shaders 
+	GLuint shaderProgram = glCreateProgram();
+	glAttachShader(shaderProgram, vertexShader);
+	glAttachShader(shaderProgram, fragmentShader);
+	glLinkProgram(shaderProgram);
+	
+	glDeleteShader(vertexShader);
+	glDeleteShader(fragmentShader);
 
 	// Area OpenGL renders from (0,0) to (800, 800)
 	glViewport(0, 0, 800, 800);
@@ -48,12 +69,12 @@ int main(){
 	// Specify the color of the background to GL_COLOR_BUFFER_BIT
 	glClearColor(0.07f, 0.13f, 0.17, 1.0f);
 
-	// When glfw's window is not closed do the while loop
+	// while window is open 
 	while(!glfwWindowShouldClose(window)){
-		// Allows for the window to respond to events like resizing
+		// Check for events (like resizing)
 		glfwPollEvents();
 
-		// Clear the back buffer and assign new color
+		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		// Swaps the drawn back buffer with the front buffer
