@@ -1,4 +1,4 @@
-// graphics
+// Windowing and OpenGL
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
