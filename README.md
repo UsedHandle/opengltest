@@ -2,5 +2,5 @@
 small project to make a opengl engine 
 
 deps to compile:
-  glad
+  glad,
   glfw
