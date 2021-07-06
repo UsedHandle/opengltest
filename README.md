@@ -1,4 +1,4 @@
-# opengltest: A small opengl engine 
+# Opengltest: A small OpenGL engine 
 ### Credits:
 * The images in docs/ are made by Joey de Vries from https://learnopengl.com
 * Joey de Vries's tutorial series which helped me learn some opengl (also https://learnopengl.com)
