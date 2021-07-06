@@ -6,7 +6,7 @@
 
 #
 
-Keep in mind I am a beginner with opengl and do not now much about c++
+Keep in mind I am a beginner with opengl and do not know much about c++
 
 #
 
