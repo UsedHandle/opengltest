@@ -1,6 +1,6 @@
 # Opengltest: A small OpenGL engine 
 ### Credits:
-* The images in docs/ are made by [Joey de Vries](https://twitter.com/JoeyDeVriez) from https://learnopengl.com and are liscenced under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) ([human-readable link](https://creativecommons.org/licenses/by-nc/4.0/))
+* The images in docs/ are made by [Joey de Vries](https://twitter.com/JoeyDeVriez) from https://learnopengl.com and are liscensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/legalcode) ([human-readable link](https://creativecommons.org/licenses/by-nc/4.0/))
   * [docs/glslCoordinates.png](https://learnopengl.com/img/getting-started/ndc.png)
   * [docs/vao&vbo.png](https://learnopengl.com/img/getting-started/vertex_array_objects.png)
 * Joey de Vries's tutorial series (also https://learnopengl.com)
