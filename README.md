@@ -12,7 +12,7 @@ Keep in mind I am a beginner with opengl and do not know much about c++
 
 #
 
-### Dependencies:
+### Dependencies to **compile**:
 * glad,
 * glfw,
 * gcc/g++,
