@@ -31,6 +31,6 @@ compile with `make` command
 #
 
 **Todo:**
-* Create Triangle
 * Use cmake instead of make
+* Make the code proper and create textures
 * Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)
