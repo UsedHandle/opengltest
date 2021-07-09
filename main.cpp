@@ -14,9 +14,12 @@
 using namespace std;
 
 // glShaderSource() only takes in chars and not strings
+// note: this is only a temp. solution. I am planning to make shaders into objects like in learnopengl.com 's tutorial 
 // Gets shader from file
-const char* vertexShaderSource = getShader("shaders/shader.vert");
-const char* fragmentShaderSource = getShader("shaders/shader.frag");
+string vertexShaderSourceString = getShader("shaders/shader.vert");
+const char* vertexShaderSource = vertexShaderSourceString.c_str();
+string fragmentShaderSourceString = getShader("shaders/shader.frag");
+const char* fragmentShaderSource = fragmentShaderSourceString.c_str(); 
 
 int main(){
 	// Inits glfw and core profile
@@ -45,7 +48,7 @@ int main(){
 
 		return -1;
 	}
-	
+
 	// Creates vertex shader, links source code to shader, and compiles it
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	compileShader(vertexShader, &vertexShaderSource);
@@ -59,10 +62,24 @@ int main(){
 	glAttachShader(shaderProgram, vertexShader);
 	glAttachShader(shaderProgram, fragmentShader);
 	glLinkProgram(shaderProgram);
-	
+
+	// Deletes shaders as they are already in the program
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
 
+	GLuint VBO, VAO;
+
+	glGenVertexArrays(1, &VAO);
+	glGenBuffers(1, &VBO);
+
+	glBindVertexArray(VAO);
+
+	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(0);
+	
 	// Area OpenGL renders from (0,0) to (800, 800)
 	glViewport(0, 0, 800, 800);
 
@@ -76,11 +93,18 @@ int main(){
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT);
-
-		// Swaps the drawn back buffer with the front buffer
+		glUseProgram(shaderProgram);
+		glBindVertexArray(VAO);
+		glDrawArrays(GL_TRIANGLES, 0, 3);
+		
+		// Swap the drawn back buffer with the front buffer
 		glfwSwapBuffers(window);
 	}
 	
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteProgram(shaderProgram);
+
 	// Terminate glfw and the window
 	glfwDestroyWindow(window);
 	glfwTerminate();

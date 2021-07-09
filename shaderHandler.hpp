@@ -7,7 +7,7 @@
 
 using namespace std;
 
-const char* getShader(string file){
+string getShader(string file){
 	ifstream fileStream;
 	fileStream.open(file);
 
@@ -15,7 +15,7 @@ const char* getShader(string file){
 	fileSStream << fileStream.rdbuf();
 	fileStream.close();
 
-	return fileSStream.str().c_str();
+	return fileSStream.str();
 }
 
 void compileShader(GLuint shader, const GLchar** source){
