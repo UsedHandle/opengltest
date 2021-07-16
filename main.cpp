@@ -1,6 +1,8 @@
-// Windowing and OpenGL
+// Window Events and Graphics
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 // std
 #include <iostream>
@@ -13,6 +15,7 @@
 using namespace std;
 
 int main(){
+
 	// Inits glfw and core profile
 	glfwGLInit();
 
@@ -21,8 +24,7 @@ int main(){
 
 	// Checks if there was no errors
 	if(window == NULL){
-		glfwTerminate();
-		
+		glfwTerminate();		
 		std::cout << "Failed to create a window with GLFW" << std::endl;
 
 		return -1;
@@ -62,15 +64,43 @@ int main(){
 	
 	// Tells the vertex shader how the data from the binded vbo 
 	// Tells glsl the location that was told in the .vert, how many numbers per point, the type, 
-	// if it is normalized, the amount bytes in each point, and where the data begins in the vbo 
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), nullptr);
+	// if it is normalized, the amount of bytes until the next vertex, and where the data begins in the vbo 
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
 
 	// Unbinds the objects
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+	int imgWidth, imgHeight, colChnl;
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* imgBytes = stbi_load("textures/wall.jpg", &imgWidth, &imgHeight, &colChnl, 0);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, texture);
+	
+	// glTextureParameteri() and glTexParameteri() are two different things :( 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imgBytes);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	stbi_image_free(imgBytes);
+	glBindTexture(GL_TEXTURE_2D, 0);
+
+	GLuint tex0 = glGetUniformLocation(shaderProgram, "tex0");
+	glUseProgram(shaderProgram);
+	glUniform1i(tex0, 0);
 	// Area OpenGL renders from (0,0) to (800, 800)
 	glViewport(0, 0, 800, 800);
 
@@ -86,23 +116,26 @@ int main(){
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT);	
-		
+	
+		glBindTexture(GL_TEXTURE_2D, texture);
+
 		// Binds the VAO to draw the data
 		glBindVertexArray(VAO);
-		
+
 		// Uses the EBO to draw triangles, the amount of points to draw, the type of values, and the offset
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 
 		// Swap the drawn back buffer with the front buffer
 		glfwSwapBuffers(window);
 	}
-	
+
 	glDeleteProgram(shaderProgram);
+	glDeleteTextures(1, &texture);
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
 	glDeleteBuffers(1, &EBO);
-
+	
 
 	// Terminate glfw and the window
 	glfwDestroyWindow(window);
