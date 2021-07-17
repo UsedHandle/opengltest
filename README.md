@@ -31,6 +31,12 @@ compile with `make` command
 #
 
 **Todo:**
+* Make a simple 3D object
 * Use cmake instead of make
-* Make the code proper and create textures
-* Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)
+
+
+
+* ~~Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)~~
+*Why remove this todo?*
+
+I believe there is little reason to create an extra binary for mac and windows that will help improve the engine. Though, if I find an interest again I will try.
