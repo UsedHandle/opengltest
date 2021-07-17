@@ -36,7 +36,7 @@ compile with `make` command
 
 
 
-* ~~Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)~~
+~~ * Add Windows binary and a mac binary (although apple deprecated opengl and will likely remove it)~~
 
 *Why remove this todo?*
 
