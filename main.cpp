@@ -1,18 +1,24 @@
+// std
+#include <iostream>
+
 // Window Events and Graphics
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-// std
-#include <iostream>
+// Math
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 // Custom headers
 #include "glInit.hpp"
 #include "coordinates.hpp"
 #include "shaderHandler.hpp"
 
-using namespace std;
+#define WIDTH 800
+#define HEIGHT 800
 
 int main(){
 
@@ -20,7 +26,7 @@ int main(){
 	glfwGLInit();
 
 	// Creates window with a width of xxx, a height of xxx, a name of xxx, without fullscreen, and window to share resources with 
-	GLFWwindow* window = glfwCreateWindow(800, 800, "LearnOpengl", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpengl", NULL, NULL);
 
 	// Checks if there was no errors
 	if(window == NULL){
@@ -45,11 +51,11 @@ int main(){
 	// Creates shader program
 	GLuint shaderProgram = makeShader("shaders/shader.vert", "shaders/shader.frag");
 
-	// Creates and VBO, VAO, and EBO
-	GLuint VBO, VAO, EBO;
+	// Creates and VBO, VAO
+	GLuint VBO, VAO;
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(1, &EBO);
+//	glGenBuffers(1, &EBO);
 
 	// Chooses the VAO as the vertex array to be modified, binds a VBO to the VAO and passes vertices to the VBO
 	// GL_STATIC_DRAW means that the data will not be changed, used many times, and will be drawn to the screen
@@ -59,8 +65,8 @@ int main(){
 
 	// Chooses the EBO as the element to be modified, and passes in the indices
 	// GL_STATIC_DRAW still means the same thing as above
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+//	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	
 	// Tells the vertex shader how the data from the binded vbo 
 	// Tells glsl the location that was told in the .vert, how many numbers per point, the type, 
@@ -86,12 +92,12 @@ int main(){
 	glBindTexture(GL_TEXTURE_2D, texture);
 	
 	// glTextureParameteri() and glTexParameteri() are two different things :( 
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, imgWidth, imgHeight, 0, GL_RGB, GL_UNSIGNED_BYTE, imgBytes);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
@@ -101,29 +107,53 @@ int main(){
 	GLuint tex0 = glGetUniformLocation(shaderProgram, "tex0");
 	glUseProgram(shaderProgram);
 	glUniform1i(tex0, 0);
-	// Area OpenGL renders from (0,0) to (800, 800)
-	glViewport(0, 0, 800, 800);
+	
+	using namespace glm;
+	mat4 model = mat4(1.0f);
+	mat4 view = mat4(1.0f);
+	mat4 proj = mat4(1.0f);
+	
+
+	view = translate(view, vec3(0.0f, 0.0f, -3.0f));
+	proj = perspective(radians(45.0f), (float)(WIDTH/HEIGHT), 0.1f, 100.0f); 
+
+	// Area OpenGL renders from (0,0) to (width, height)
+	glViewport(0, 0, WIDTH, HEIGHT);
 
 	// Specify the color of the background to GL_COLOR_BUFFER_BIT
-	glClearColor(0.07f, 0.13f, 0.17, 1.0f);
+	glClearColor(0.19f, 0.24f, 0.27, 1.0f);
 
 	glUseProgram(shaderProgram);
+	
+	// Provides matrices to shader program
+	GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
+	GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
+	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
+	GLint projLoc = glGetUniformLocation(shaderProgram, "proj");
+	glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
+	
+	glEnable(GL_DEPTH_TEST);
 
 	// while window is open 
 	while(!glfwWindowShouldClose(window)){
 		// Check for events (like resizing)
 		glfwPollEvents();
+			
+		model = rotate(model, radians(1.0f), vec3(0.0f, 1.0f, 1.0f));
+		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
-		glClear(GL_COLOR_BUFFER_BIT);	
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 	
 		glBindTexture(GL_TEXTURE_2D, texture);
 
 		// Binds the VAO to draw the data
 		glBindVertexArray(VAO);
 
-		// Uses the EBO to draw triangles, the amount of points to draw, the type of values, and the offset
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		// Uses the VBO to draw triangles, the offset, and the amount of vertices
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/(sizeof(float)*5));
 
 		// Swap the drawn back buffer with the front buffer
 		glfwSwapBuffers(window);
@@ -134,7 +164,6 @@ int main(){
 
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
 	
 
 	// Terminate glfw and the window

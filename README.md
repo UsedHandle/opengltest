@@ -31,7 +31,6 @@ compile with `make` command **linux only**
 #
 
 **Todo:**
-* Make a simple 3D object
 * Use cmake instead of make
 
 
