@@ -133,14 +133,28 @@ int main(){
 	GLint projLoc = glGetUniformLocation(shaderProgram, "proj");
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
 	
+	// Makes depth buffer and allows closer objects be in front (rendered last) of others
 	glEnable(GL_DEPTH_TEST);
+	
+	int frameCount = 0;
+	float prevTime = 0;
+	float time;
+	string title;
 
 	// while window is open 
 	while(!glfwWindowShouldClose(window)){
 		// Check for events (like resizing)
 		glfwPollEvents();
-			
-		model = rotate(model, radians(1.0f), vec3(0.0f, 1.0f, 1.0f));
+		
+		time = glfwGetTime();
+
+		// Every ~100 frames set the title to fps
+		if(!(frameCount % 100)){	
+			title = "LearnOpengl " + to_string( (int)( 1/(time - prevTime) ) ) + " FPS";
+			glfwSetWindowTitle(window, title.c_str());
+		}
+
+		model = rotate(model, radians(1.0f), vec3(1.0f, 1.0f, 1.0f));
 		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
 
@@ -153,10 +167,12 @@ int main(){
 		glBindVertexArray(VAO);
 
 		// Uses the VBO to draw triangles, the offset, and the amount of vertices
-		glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/(sizeof(float)*5));
-
+		glDrawArrays(GL_TRIANGLES, 0, sizeof(vertices)/(sizeof(float)*5));	
 		// Swap the drawn back buffer with the front buffer
 		glfwSwapBuffers(window);
+
+		prevTime = time;
+		frameCount++;
 	}
 
 	glDeleteProgram(shaderProgram);
