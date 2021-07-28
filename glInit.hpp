@@ -6,7 +6,6 @@
 
 // std
 #include <iostream>
-#include <string>
 
 void glfwGLInit(){
 	// Initizalizes glfw

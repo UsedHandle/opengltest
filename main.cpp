@@ -25,13 +25,16 @@ int main(){
 	// Inits glfw and core profile
 	glfwGLInit();
 
+	// Anti-Aliasing (MSAA)
+	glfwWindowHint(GLFW_SAMPLES, 4);
+
 	// Creates window with a width of xxx, a height of xxx, a name of xxx, without fullscreen, and window to share resources with 
 	GLFWwindow* window = glfwCreateWindow(WIDTH, HEIGHT, "LearnOpengl", NULL, NULL);
 
 	// Checks if there was no errors
 	if(window == NULL){
 		glfwTerminate();		
-		std::cout << "Failed to create a window with GLFW" << std::endl;
+		cout << "Failed to create a window with GLFW" << std::endl;
 
 		return -1;
 	}
@@ -41,9 +44,8 @@ int main(){
 
 	// Loads configurations for OpenGL
 	gladLoadGL();
-
 	if(!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)){
-		std::cout << "Failed to initialize GLAD" << std::endl;
+		cout << "Failed to initialize GLAD" << std::endl;
 
 		return -1;
 	}
@@ -134,13 +136,15 @@ int main(){
 	glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
 	
 	// Makes depth buffer and allows closer objects be in front (rendered last) of others
+	// Enables AA with multisampling (MSAA) if not defaulted to
 	glEnable(GL_DEPTH_TEST);
-	
+	glEnable(GL_MULTISAMPLE);	
+
 	int frameCount = 0;
 	float prevTime = 0;
 	float time;
 	string title;
-
+	
 	// while window is open 
 	while(!glfwWindowShouldClose(window)){
 		// Check for events (like resizing)
