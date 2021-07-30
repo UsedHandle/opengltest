@@ -20,7 +20,7 @@ Keep in mind I am a beginner with opengl and do not know much about c++
 
 #
 
-compile with `make` command **linux only** 
+compile with `make` command **linux X11 only** 
 
 #
 
