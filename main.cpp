@@ -157,10 +157,12 @@ int main(){
 			title = "LearnOpengl " + to_string( (int)( 1/(time - prevTime) ) ) + " FPS";
 			glfwSetWindowTitle(window, title.c_str());
 		}
-
-		model = rotate(model, radians(1.0f), vec3(1.0f, 1.0f, 1.0f));
-		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
-		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
+		if(time*75 > frameCount){	
+			model = rotate(model, radians(1.0f), vec3(1.0f, 1.0f, 1.0f));
+			GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));	
+			frameCount++;
+		}
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
@@ -176,7 +178,6 @@ int main(){
 		glfwSwapBuffers(window);
 
 		prevTime = time;
-		frameCount++;
 	}
 
 	glDeleteProgram(shaderProgram);
