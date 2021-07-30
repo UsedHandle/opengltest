@@ -15,6 +15,7 @@ Keep in mind I am a beginner with opengl and do not know much about c++
 ### Dependencies to **compile**:
 * glad,
 * glfw,
+* glm
 * gcc/g++,
 * make
 
