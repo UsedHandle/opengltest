@@ -15,17 +15,17 @@ Keep in mind I am a beginner with opengl and do not know much about c++
 ### Dependencies to **compile**:
 * glad,
 * glfw,
-* glm
-* gcc/g++,
+* glm,
+* c/c++ compiler,
 * make
 
 #
 
-compile with `make` command **linux X11 only** 
+compile with `make` command **linux only** 
 
 #
 
-*note: the preincluded binary "OpenglTest" is a linux binary*
+*note: the preincluded binary "OpenglTest" is a linux X11 binary*
 
 *note: this project as of the 6th of Jully 2021 uses core profile version 3.3*
 
