@@ -32,12 +32,5 @@ compile with `make` command **linux only**
 #
 
 **Todo:**
-* Use cmake instead of make
-
-
-
-~~Add a mac binary (although apple deprecated opengl and will likely remove it)~~
-
-*Why remove this todo?*
-
-I believe there is little reason to create an extra binary for mac that will help improve the engine. Though, if I find an interest again I will try.
+* Add inputs for camera control
+* Model loading
