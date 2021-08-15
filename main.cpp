@@ -130,28 +130,33 @@ int main(){
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);	
 
+	
 	int frameCount = 0;
+
+	string title;
+	
 	float prevTime = 0;
 	float time;
-	string title;
+	float deltaTime;
 	
 	while(!glfwWindowShouldClose(window)){
 		// Check for events (like resizing)
 		glfwPollEvents();
 		
 		time = glfwGetTime();
+		deltaTime = time - prevTime;
 
 		// Every ~100 frames set the title to fps
 		if(!(frameCount % 100)){	
-			title = "LearnOpengl " + to_string( (int)( 1/(time - prevTime) ) ) + " FPS";
+			title = "LearnOpengl " + to_string( (int)( 1/deltaTime ) ) + " FPS";
 			glfwSetWindowTitle(window, title.c_str());
 		}
-		if(time*75 >= frameCount){	
-			model = rotate(model, radians(1.0f), vec3(1.0f, 1.0f, 1.0f));
-			GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));	
-			frameCount++;
-		}
+	
+		// Rotates as if rotating 1 degree 75 fps
+		model = rotate(model, radians(75.0f * deltaTime), vec3(1.0f, 1.0f, 1.0f));
+		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
+		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));	
+		frameCount++;
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
