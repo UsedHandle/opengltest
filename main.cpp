@@ -16,6 +16,7 @@
 #include "glsetup.hpp"
 #include "coordinates.hpp"
 #include "shaderHandler.hpp"
+#include "camera.hpp"
 
 unsigned int width = 800;
 unsigned int height = 800;
@@ -107,6 +108,7 @@ int main(){
 	
 
 	view = translate(view, vec3(0.0f, 0.0f, -3.0f));
+	// FOV, aspect ratio, nearest object you can see, farthest object you can see
 	proj = perspective(radians(45.0f), (float)(width/height), 0.1f, 100.0f); 
 
 	// Area OpenGL renders from (0,0) to (width, height)
@@ -117,14 +119,14 @@ int main(){
 
 	glUseProgram(shaderProgram);
 	
+	Camera camera(width, height, 45.0f, vec3(0.0f, 0.0f, 2.0f), vec3(0.0f, 0.0f, -1.0f), vec3(0.0f, 1.0f, 0.0f));
+
+	camera.setUniform(shaderProgram, "camera");
+
 	// Provides matrices to shader program
 	GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));
-	GLint viewLoc = glGetUniformLocation(shaderProgram, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, value_ptr(view));
-	GLint projLoc = glGetUniformLocation(shaderProgram, "proj");
-	glUniformMatrix4fv(projLoc, 1, GL_FALSE, value_ptr(proj));
-	
+		
 	// Makes depth buffer and allows closer objects be in front (rendered last) of others
 	// Enables AA with multisampling (MSAA) if not defaulted to
 	glEnable(GL_DEPTH_TEST);
@@ -151,12 +153,13 @@ int main(){
 			title = "LearnOpengl " + to_string( (int)( 1/deltaTime ) ) + " FPS";
 			glfwSetWindowTitle(window, title.c_str());
 		}
-	
+		
 		// Rotates as if rotating 1 degree 75 fps
 		model = rotate(model, radians(75.0f * deltaTime), vec3(1.0f, 1.0f, 1.0f));
 		GLint modelLoc = glGetUniformLocation(shaderProgram, "model");
 		glUniformMatrix4fv(modelLoc, 1, GL_FALSE, value_ptr(model));	
-		frameCount++;
+		
+		camera.moveAndLook(window, shaderProgram, "camera", deltaTime, 75); 
 
 		// Draw GL_COLOR_BUFFER_BIT to the back buffer 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
@@ -171,6 +174,7 @@ int main(){
 		// Swap the drawn back buffer with the front buffer
 		glfwSwapBuffers(window);
 
+		frameCount++;
 		prevTime = time;
 	}
 
