@@ -7,8 +7,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include<glm/gtx/rotate_vector.hpp>
-#include<glm/gtx/vector_angle.hpp>
+#include <glm/gtx/rotate_vector.hpp>
+#include <glm/gtx/vector_angle.hpp>
 
 using namespace glm;
 
@@ -63,8 +63,9 @@ struct Camera {
 		// Escape	
 		escPress = glfwGetKey(window, GLFW_KEY_ESCAPE);
 		if(prevEscPress && !escPress){	
-			isEsc ? glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL): 
-							glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+			isEsc ? 
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL): 
+				glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
  
 			isEsc = !isEsc;
 		}	
