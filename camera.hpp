@@ -49,10 +49,10 @@ struct Camera {
 			target -= orientation;
 		}
 		if(glfwGetKey(window, GLFW_KEY_D)){
-			target += normalize(cross(orientation, up));
+			target += cross(orientation, up);
 		}
 		if(glfwGetKey(window, GLFW_KEY_A)){
-			target -= normalize(cross(orientation, up));
+			target -= cross(orientation, up);
 		}
 		
 		// normalized movement as if running x fps 
