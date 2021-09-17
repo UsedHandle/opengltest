@@ -32,5 +32,4 @@ compile with `make` command **linux only**
 #
 
 **Todo:**
-* Add inputs for camera control
 * Model loading
