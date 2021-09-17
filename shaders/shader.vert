@@ -5,10 +5,9 @@ layout (location = 1) in vec2 aTex;
 
 out vec2 texCoord;
 
-uniform mat4 model;
-uniform mat4 camera;
+uniform mat4 camMat;
 
 void main(){
-    gl_Position = camera * model * vec4(aPos, 1.0);
+    gl_Position = camMat * vec4(aPos, 1.0);
     texCoord = aTex;
 }
