@@ -48,12 +48,12 @@ int main(){
 	
 	// widow width, height
 	Camera camera(
-	    width,                   // widow width 
-	    height,                  // window height
-	    45.0f,                   // FOV
-			vec3(0.0f, 0.0f, 2.0f),  // position
-			vec3(0.0f, 0.0f, -1.0f), // orientation
-			vec3(0.0f, 1.0f, 0.0f)); // up
+		width,                   // widow width 
+		height,                  // window height
+		45.0f,                   // FOV
+		vec3(0.0f, 0.0f, 2.0f),  // position
+		vec3(0.0f, 0.0f, -1.0f), // orientation
+		vec3(0.0f, 1.0f, 0.0f)); // up
 
 	while(!glfwWindowShouldClose(window)){	
 		glfwPollEvents(); // Check for events (like resizing)
