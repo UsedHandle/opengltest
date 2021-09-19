@@ -50,7 +50,7 @@ struct Camera {
 		glUniformMatrix4fv(glGetUniformLocation(shaderProgram, uniform), 1, GL_FALSE, value_ptr(proj * view));		
 	}
 
-	void moveAndLook(GLFWwindow* window, GLuint shaderProgram, const char* uniform, float deltaTime, int fps){	
+	void moveAndLook(GLFWwindow* window, GLuint shaderProgram, const char* uniform, float deltaTime, int targetFps){	
 		// Keyboard
 		vec3 target = vec3(0.0f);
 		if(glfwGetKey(window, GLFW_KEY_W))
@@ -66,24 +66,24 @@ struct Camera {
 			target -= cross(orientation, up);
 	
 		// normalized movement as if running x fps 
-		if(length(target)) target = fps*deltaTime * speed*normalize(target); 
+		if(length(target)) target = deltaTime * speed*normalize(target); 
 		
 		position += target;	
 
 		// Arrow camera rotation
 		if(glfwGetKey(window, GLFW_KEY_LEFT))
-			orientation = rotate(orientation, radians(fps*deltaTime * sensitivity * 10), up);
+			orientation = rotate(orientation, radians(deltaTime * sensitivity * 10 / width), up);
 		
 		if(glfwGetKey(window, GLFW_KEY_RIGHT))
-			orientation = rotate(orientation, radians(-fps*deltaTime * sensitivity * 10), up);
+			orientation = rotate(orientation, radians(deltaTime * sensitivity * -10 / width), up);
 		
 		if(glfwGetKey(window, GLFW_KEY_UP)){
-			vec3 yRotOrientation = rotate(orientation, radians(fps*deltaTime * sensitivity * 10), cross(orientation, up));	
+			vec3 yRotOrientation = rotate(orientation, radians(deltaTime * sensitivity * 10 / height), cross(orientation, up));	
 			if(abs(angle(yRotOrientation, up) - radians(90.0f)) <= radians(85.0f)) // Prevents oddities from gimbal lock
 				orientation = yRotOrientation;
 		}	
 		if(glfwGetKey(window, GLFW_KEY_DOWN)){
-			vec3 yRotOrientation = rotate(orientation, radians(-fps*deltaTime * sensitivity * 10), cross(orientation, up));
+			vec3 yRotOrientation = rotate(orientation, radians(deltaTime * sensitivity * -10 / height), cross(orientation, up));
 			if(abs(angle(yRotOrientation, up) - radians(90.0f)) <= radians(85.0f))
 				orientation = yRotOrientation;
 	
@@ -106,9 +106,9 @@ struct Camera {
 				double xOffset = xPos - last_xPos;
 				double yOffset = yPos - last_yPos;
 
-				xRot =  -fps*deltaTime * sensitivity * (xOffset)  / width;
-				yRot =  -fps*deltaTime * sensitivity * (yOffset) / height;
-				printf("(%f, %f)\n", xOffset, yOffset);				
+				xRot =  -deltaTime * sensitivity * (xOffset) / width;
+				yRot =  -deltaTime * sensitivity * (yOffset) / height;
+
 				orientation = rotate(orientation, radians(xRot), up);	
 				vec3 yRotOrientation = rotate(orientation, radians(yRot), cross(orientation, up));
 				

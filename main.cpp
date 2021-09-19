@@ -1,16 +1,19 @@
-// Custom headers
+static int width = 800;
+static int height = 800;
+static const char* title = "LearnOpengl";
+
+static int targetFps = 75;
+
 #include "glsetup.hpp"
 #include "coordinates.hpp"
 #include "shaderHandler.hpp"
 #include "textureHandler.hpp"
 #include "camera.hpp"
 
-unsigned int width = 800;
-unsigned int height = 800;
 
 int main(){
 
-	GLFWwindow* window = makeWindowEnv(width, height, "LearnOpengl");
+	GLFWwindow* window = makeWindowEnv(width, height, title);
 	
 	GLuint shaderProgram = makeShaderProgram("shaders/shader.vert", "shaders/shader.frag");
 	glUseProgram(shaderProgram);
@@ -34,18 +37,15 @@ int main(){
 	glEnableVertexAttribArray(1);
 
 
-	glViewport(0, 0, width, height);
+	glClearColor(0.19f, 0.24f, 0.27, 1.0f); // Specify GL_COLOR_BUFFER_BIT
 
-	glClearColor(0.19f, 0.24f, 0.27, 1.0f); // Specify to GL_COLOR_BUFFER_BIT
-
-
-	string title;
-	
+	string title;	
 	int frameCount = 0;
 	float prevTime = 0;
 	float time;
 	float deltaTime;
-	
+	float fps;
+
 	// widow width, height
 	Camera camera(
 		width,                   // widow width 
@@ -59,15 +59,15 @@ int main(){
 		glfwPollEvents(); // Check for events (like resizing)
 		
 		time = glfwGetTime();
-		deltaTime = time - prevTime;
+		deltaTime = targetFps * (time - prevTime);
+		fps = targetFps/deltaTime;
 
-		// Every ~100 frames set the title to fps
-		if(!(frameCount % 100)){	
-			title = "LearnOpengl " + to_string( (int)( 1/deltaTime ) ) + " FPS";
-			glfwSetWindowTitle(window, title.c_str());
+		// Every 45 frames set the title to fps
+		if(!(frameCount % 45)){	
+			cout << fps << endl;	
 		}
 			
-		camera.moveAndLook(window, shaderProgram, "camMat", deltaTime, 75); 
+		camera.moveAndLook(window, shaderProgram, "camMat", deltaTime, targetFps); 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 	

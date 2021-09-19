@@ -9,8 +9,9 @@
 
 using namespace std;
 
-void glfwFbSizeCallback(GLFWwindow* window, int width, int height){
-	glViewport(0, 0, width, height);
+void glfwFbSizeCallback(GLFWwindow* window, int fbWidth, int fbHeight){
+	glfwGetWindowSize(window, &width, &height);
+	glViewport(0, 0, fbWidth, fbHeight);
 }
 
 void glfwErrorCallback(int error, const char* description){
@@ -56,5 +57,9 @@ GLFWwindow* makeWindowEnv(int width, int height, const char* title){
 	glEnable(GL_DEPTH_TEST); // Depth Testing
 	glEnable(GL_MULTISAMPLE);	// Anti-Aliasing (MSAA)
 
+	int fbWidth, fbHeight;
+	glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
+	glViewport(0, 0, fbWidth, fbHeight);
+	
 	return window;
 }
