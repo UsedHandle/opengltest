@@ -89,7 +89,7 @@ struct Camera {
 	
 		}
 
-		// Escape	
+		// Cursor	
 		if(glfwGetKey(window, GLFW_KEY_ESCAPE)){	
 			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
 			isEsc = true;
