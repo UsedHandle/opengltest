@@ -95,8 +95,8 @@ struct Camera {
 			isEsc = true;
 		}
 		if(glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) && isEsc){
-			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-			glfwSetCursorPos(window, width/2, height/2);	
+			glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);	
+			glfwGetCursorPos(window, &last_xPos, &last_yPos);
 			isEsc = false;	
 		}
 		
