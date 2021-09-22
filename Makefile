@@ -1,4 +1,4 @@
-LDFLAGS = -lglfw3 -lglad -lm -lpthread -ldl
+LDFLAGS = -lglfw3 -lglad -lassimp -lm -lpthread -ldl
 
 OpenglTest: *.cpp *.hpp 
 	c++  -Wall -O2 -o bin/OpenglTest *.cpp $(LDFLAGS)

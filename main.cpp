@@ -1,15 +1,17 @@
-static int width = 800;
-static int height = 800;
-static const char* title = "LearnOpengl";
-
-static int targetFps = 75;
-
 #include "glsetup.hpp"
 #include "coordinates.hpp"
 #include "shaderHandler.hpp"
 #include "textureHandler.hpp"
 #include "camera.hpp"
+#include "model.hpp"
 
+// In glsetup.hpp
+// static int width = 800;
+// static int height = 800;
+
+static const char* title = "LearnOpengl";
+
+static int targetFps = 75;
 
 int main(){
 
@@ -18,25 +20,7 @@ int main(){
 	GLuint shaderProgram = makeShaderProgram("shaders/shader.vert", "shaders/shader.frag");
 	glUseProgram(shaderProgram);
 
-	GLuint texture = setTexture("textures/wall.jpg", 0, GL_NEAREST, shaderProgram, "tex0");	
-	
-	GLuint VBO, VAO;
-	glGenVertexArrays(1, &VAO);
-	glGenBuffers(1, &VBO);
-
-	glBindVertexArray(VAO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW); // Data is static
-
-	// shader location, numbers per point, type, normalizing, bytes between each attribute, offset
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), nullptr);
-	glEnableVertexAttribArray(0);
-
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3*sizeof(float)));
-	glEnableVertexAttribArray(1);
-
-
+	Model model("models/cyborg/cyborg.obj");
 	glClearColor(0.19f, 0.24f, 0.27, 1.0f); // Specify GL_COLOR_BUFFER_BIT
 
 	string title;	
@@ -46,46 +30,37 @@ int main(){
 	float deltaTime;
 	float fps;
 
-	// widow width, height
-	Camera camera(
-		width,                   // widow width 
-		height,                  // window height
-		45.0f,                   // FOV
-		vec3(0.0f, 0.0f, 2.0f),  // position
-		vec3(0.0f, 0.0f, -1.0f), // orientation
-		vec3(0.0f, 1.0f, 0.0f)); // up
+	Camera camera(width,                   // window width
+		            height,                  // window height 
+		            50.0f,                   // FOV (degrees)
+		            vec3(0.0f, 0.0f, 2.0f),  // position
+		            vec3(0.0f, 0.0f, -1.0f), // orientation
+		            vec3(0.0f, 1.0f, 0.0f)); // up
 
+	
 	while(!glfwWindowShouldClose(window)){	
 		glfwPollEvents(); // Check for events (like resizing)
 		
 		time = glfwGetTime();
 		deltaTime = targetFps * (time - prevTime);
 		fps = targetFps/deltaTime;
-
-		// Every 45 frames set the title to fps
-		if(!(frameCount % 45)){	
-			cout << fps << endl;	
-		}
-			
+		
 		camera.moveAndLook(window, shaderProgram, "camMat", deltaTime, targetFps); 
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 	
-		glBindVertexArray(VAO);
-		glDrawArrays( GL_TRIANGLES, 0, sizeof(vertices)/(sizeof(float)*5) ); // Type of vertex, offset, count	
+		model.Draw(shaderProgram);
+	
 		glfwSwapBuffers(window);
-
 
 		frameCount++;
 		prevTime = time;
 	}
 
 	glDeleteProgram(shaderProgram);
-	glDeleteTextures(1, &texture);
 
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	
+	model.deleteData(); // Delete textures, VAOs, VBOs, and EBOs
+
 	// Terminate glfw and the window
 	glfwDestroyWindow(window);
 	glfwTerminate();

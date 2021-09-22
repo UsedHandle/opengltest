@@ -7,6 +7,9 @@
 // std
 #include <iostream>
 
+static int width = 800;
+static int height = 800;
+
 using namespace std;
 
 void glfwFbSizeCallback(GLFWwindow* window, int fbWidth, int fbHeight){
@@ -54,12 +57,13 @@ GLFWwindow* makeWindowEnv(int width, int height, const char* title){
 		exit(EXIT_FAILURE);	
 	}
 
-	glEnable(GL_DEPTH_TEST); // Depth Testing
-	glEnable(GL_MULTISAMPLE);	// Anti-Aliasing (MSAA)
-
 	int fbWidth, fbHeight;
 	glfwGetFramebufferSize(window, &fbWidth, &fbHeight);
 	glViewport(0, 0, fbWidth, fbHeight);
 	
+	glEnable(GL_DEPTH_TEST);  // Depth Testing
+	glEnable(GL_MULTISAMPLE);	// Anti-Aliasing (MSAA)
+	glEnable(GL_CULL_FACE);   // Culling	
+
 	return window;
 }

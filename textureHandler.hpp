@@ -17,38 +17,39 @@ GLuint makeTexture( int textureUnit, GLint texParam, GLenum format, unsigned cha
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA16F, imgWidth, imgHeight, 0, format, GL_UNSIGNED_BYTE, bytes);
 	glGenerateMipmap(GL_TEXTURE_2D);
-
+		
 	return texture;
 }
 
-GLuint setTexture( const char* file, int textureUnit, GLint texParam, GLuint shaderProgram, const char* uniform ){	
+GLuint setTexture(const char* file,
+                  int textureUnit,
+                  GLint texParam){	
 	stbi_set_flip_vertically_on_load(true);
 	int imgWidth, imgHeight, colChnl;
 	unsigned char* imgBytes = stbi_load(file, &imgWidth, &imgHeight, &colChnl, 0);
 	
-	GLenum format;
 
-	if(colChnl == 1)
-		format = GL_RED;	
-	else if(colChnl == 3)
-		format = GL_RGB;	
-	else if(colChnl == 4)
-		format = GL_RGBA;
-	else {
-		cerr << "Unknown format:" << file << endl; 
+	if(imgBytes){
+		GLenum format;
+
+		if(colChnl == 1)
+			format = GL_RED;	
+		else if(colChnl == 3)
+			format = GL_RGB;	
+		else if(colChnl == 4)
+			format = GL_RGBA;
+		else {
+			cerr << "Unknown format:" << file << endl; 
+			exit(EXIT_FAILURE);
+		}
+
+		GLuint texture = makeTexture( textureUnit, texParam, format, imgBytes, imgWidth, imgHeight );
+		stbi_image_free(imgBytes);
+
+		return texture;
+	} else {
+		cerr << "Failed to find and read texture: " << file << endl;
 		exit(EXIT_FAILURE);
 	}
-
-  if(imgBytes){
-    GLuint texture = makeTexture( textureUnit, texParam, format, imgBytes, imgWidth, imgHeight );
-    stbi_image_free(imgBytes);
-    glUniform1i(glGetUniformLocation(shaderProgram, uniform), textureUnit);
-
-  	return texture;
-
-	} else {
-    cerr << "Failed to find and read texture: " << file << endl;
-    exit(EXIT_FAILURE);
-  }
 
 }

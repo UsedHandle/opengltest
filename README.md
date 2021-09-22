@@ -16,6 +16,7 @@ Keep in mind I am a beginner with opengl and do not know much about c++
 * glad,
 * glfw,
 * glm,
+* assimp,
 * c/c++ compiler,
 * make
 
@@ -32,4 +33,5 @@ compile with `make` command **linux only**
 #
 
 **Todo:**
-* Model loading
+* lighting
+* update mac and windows binaries
